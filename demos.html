@@ -1,0 +1,348 @@
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<title>vue2.0探索</title>
+<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet" href="css/main.css" />
+<!-- lodash.js 要在vue之前引用，如果你不知道这个是干什么用的，那你得抓紧了 -->
+<script type="text/javascript" src="js/lodash.js"></script>
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/vuex.js"></script>
+<script type="text/javascript" src="js/vue-resource.js"></script>
+<script type="text/javascript" src="js/vue-router.js"></script>
+<script type="text/javascript" src="js/component.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="container">
+		<div class="well well-sm">vue2.0探索</div>
+		
+		<!-- 多种绑定 -->
+		<div class="panel panel-primary" id="demo_01">
+			<div class="panel-heading">DEMO-01 多种绑定</div>
+			<div class="panel-body">
+				<p>绑定文本：{{text}}</p>
+				<p>store中有：{{$store.state.bookList.length}}本书;共计：{{$store.getters.allPrice}}元</p>
+				<hr>
+				<p :style="styleSheet">绑定style:被绑定的样式为：{{styleSheet}}</p>
+				<hr>
+				<div class="text-center" :class="className">
+					<p>&nbsp;</p>
+					<p>绑定class:我被动态绑定了一个背景样式:{{className}}</p>
+					<p>&nbsp;</p>
+				</div>
+				<hr>
+				<div class="btn btn-default" @click.stop="changeBg()">绑定事件：改变上面背景颜色</div>
+				<hr>
+				<p>双向数据绑定：</p>
+				<div class="form-group">
+					<input class="form-ctrl" @keyup.enter="enterPress()" v-model.trim="dataBinding" placeholder="请输入文字体验VUE双向数据绑定"/>
+					<p>{{ dataBinding ? dataBinding + '。您已输入：'+dataBinding.length : '您还没有输入任何内容'}}</p>
+				</div>
+				<hr>
+				<p>绑定HTML</p>
+				<div v-html="htmlCode"></div>
+				<hr>
+				<div class="well bg-danger">
+					<p>关于绑定使用方式总结：</p>
+					<p>【事件绑定】：<br>v-on:evtName="evtFun()";<br>简写方式：@evtName="evtFun()"；<br>例如：v-on:click="fun()"; @click="fun()"</p>
+					<p>【属性绑定】：<br>v-bind:propertyName="propsValue";<br>简写方式：:propertyName="propsValue";<br>例如：:class="className";:style="styleSheet"</p>
+					<p>【文本绑定】：<br>差值表达式（双花括号）：{ {expression} }；<br>或者v-text="expression";</p>
+					<p>【双向数据绑定】：<br>主要用于表单的处理；v-model="expression"</p>
+					<p>【绑定html】：这个一般用到的不多，出于安全行的考虑，vue会对html做一些特殊处理,比如绑定的一些属性会被过滤</p>
+				</div>
+			</div>
+			<div class="panel-footer text-danger">更多：事件和双向数据的绑定以及按键事件均有一些修饰符，具体参考vue的官网2.0</div>
+		</div>
+		
+		<!-- 逻辑控制指令与数据渲染 -->
+		<div class="panel panel-primary" id="demo_02">
+			<div class="panel-heading">DEMO-02 逻辑控制指令与数据渲染</div>
+			<div class="panel-body">
+				<zujian-a></zujian-a>
+				<p>常用逻辑指令以及效果：v-if；v-else；v-else-if；v-show</p>
+				<p>基于源数据多次渲染元素或模板块：v-for</p>
+				<p>DEMO体验v-if与v-show的区别</p>
+				<div class="row">
+					<div class="col-sm-8 col-sm-offset-2">
+						<div class="btn-group">
+							<span class="btn btn-sm btn-info" v-on:click="setIf('李彦宏')">姓名为李彦宏时不显示（v-if）</span>
+							<span class="btn btn-sm btn-info" v-on:click="setShow('马云')">姓名为马云时不显示（v-show）</span>
+							<span class="btn btn-sm btn-danger" v-on:click="reset()">重  置</span>
+						</div>
+						<transition-group tag="ul" name="fade" class="list-group">
+							<li class="list-group-item" v-for="list in heroList" :key="list.name" v-if="list.name !== dsetIf" v-show="list.name !== dsetShow">
+								姓名：{{list.name}}; 所属公司：{{list.company}}
+							</li>
+						</transition-group>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 组件 -->
+		<div class="panel panel-danger" id="demo_03">
+			<div class="panel-heading">DEMO-03 Vue组件与组件间通讯通信</div>
+			<div class="panel-body">
+				<p>组件注册有两种方式，一个是全局注册，另一个是局部注册；大同小异</p>
+				<p>全局注册方式：
+<pre>
+Vue.component('component-name',{
+	template:'&lt;div&gt;Hello world!&lt;/div&gt;'
+});
+</pre>
+				</p>
+				<p>局部注册方式：
+<pre>
+var component = {
+	template:'&lt;div&gt;Hello world!&lt;/div&gt;'
+};
+var vm = new Vue({
+	el:'el',
+	components:{
+		"component-name":component
+	}
+});
+</pre>
+				</p>
+				<p>
+					组件和vue的实例一样，api基本相同。（都有：mtehods/data/methods等属性）
+				</p>
+				<hr />
+				<p>过渡状态与过渡效果transition<p>
+				<p>
+					要过渡的元素使用&lt;transition&gt;&lt;/transition&gt;包裹；<br />
+					可以出发这个属性起作用的是v-if和v-show
+				</p>
+				<div class="btn btn-primary" @click="transShow">过渡效果</div>
+				<transition name="fade">
+					<div v-if="showDiv == '1'">我是div1</div>
+				</transition>
+				<transition name="fade">
+					<div v-if="showDiv == '0'">我是div2</div>
+				</transition>
+				<p>&nbsp;<p>
+				<p>
+					对于多个元素的过渡可以使用transition-group(参照DEMO-02);<br>
+					关于transition的其他用法（如结合css动画库完成效果）可参照vue2.0的官方API
+				</p>
+				<hr />
+				<p>动态组件：（同一个组件挂载点，根据条件值不同，动态展示不同的组件）</p>
+				<p>for Example:</p>
+				<div class="btn-group">
+					<div class="btn btn-primary" @click="showCps('commonInfo')">显示信息组件</div>
+					<div class="btn btn-primary" @click="showCps('commonTip')">显示提示组件</div>
+				</div>
+				<div>
+					这里是组件挂载点：
+					<transition name="fade">
+						<component :is="tpls"></component>
+					</transition>
+				</div>
+				<hr />
+				<p>
+					重点是组件间的通讯：<br>
+					父->子数据通讯：props传递；<br>
+					子->父数据通讯：子this.$emit(evt,datas)，父this.$on(evt,fun(datas)))或者v-on:evt;
+				</p>
+				<p>
+					非父子组件通信：<br>
+					1）、复杂一点的可以使用新建一个Vue实例作为中央事件总线(事件管理中心)；<br>
+					2）、更复杂情况下采用状态管理模式（store），涉及到vuex;(打开控制台查看打印信息)
+				</p>
+				<p>简单页头组件</p>
+				<tk-header :pagename="'产品预览'" :fixed="false">
+					<span slot="left">&lt;</span>
+					<span slot="right">· · ·</span>
+				</tk-header>
+				<hr />
+				<div>
+					<h3 class="text-danger">体验store状态管理库</h3>
+					<p>状态库里的信息：{{$store.state.message}}</p>
+					<div class="btn-group">
+						<div class="btn btn-primary btn-sm" @click="commitMutations">Mutations(commit)</div>
+						<div class="btn btn-primary btn-sm" @click="dispatchAction">Actions(dispatch)</div>
+						<div class="btn btn-primary btn-sm" @click="gettersFun">Getters(getters)</div>
+					</div>
+					<ul class="list-group">
+						<li class="list-group-item" v-for="list in blist">
+							<div class="row">
+								<div class="col-sm-6">书名：《{{list.name}}》</div>
+								<div class="col-sm-6">价格：￥{{list.price}}元</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<p>其他组件：参考spa中通用编辑组件</p>
+			</div>
+			<div class="panel-footer">
+				<span class="text-danger">注意：组件的data必须是一个function;props的名称字母大写会无效。</span>
+			</div>
+		</div>
+			
+		<!-- 使用vue-router构建SPA -->
+		<div class="panel panel-danger" id="demo_05">
+			<div class="panel-heading">使用vue-router构建SPA</div>
+			<div class="panel-body">
+				<p>{{name}}</p>
+				<p>
+					路由创建过程：<br>
+					1、配置路由<br>
+					2、创建路由实例<br>
+					3、将路由实例注入到vue的实例中<br>
+					注：可参考本demo的代码了解
+				</p>
+				<div class="btn-group">
+					<router-link class="btn btn-sm" :class="this.$route.path=='/users/123' ? 'btn-success' : 'btn-default'" to="/users/123">to user</router-link>
+					<router-link class="btn btn-sm" :class="this.$route.path=='/manger/456/vue2' ? 'btn-success' : 'btn-default'" to="/manger/456/vue2">to manger</router-link>
+					<router-link class="btn btn-sm" :class="this.$route.path=='/manger/789/vue22' ? 'btn-success' : 'btn-default'" to="/manger/789/vue22">to manger2</router-link>
+				</div>
+				<router-view></router-view>
+			</div>
+		</div>
+		
+		<!-- 关于vue2.0过滤器 -->
+		<div class="panel panel-danger" id="demo_06">
+			<div class="panel-heading">关于vue2.0过滤器</div>
+			<div class="panel-body">
+				<div>
+					<p>vue2.0过滤器和1.0有较大的变化，2.0的过滤器只能用在插入的文本中（即文本过滤器）;<br/>For Example:</p>
+					<p>原文本是：{{filterText}}</p>
+					<p>过滤后的文本是：{{filterText | myFilter}}</p>
+				</div>
+				<hr />
+				<p>复杂一点的过滤器：比如列表排序，搜索等过滤器，需要依靠vue的动态计算(computed)；<br>For Example:</p>
+				<div class="row">
+					<div class="col-xs-6">
+						<p>输入过滤
+							<input v-model="filterInput"/>
+						</p>
+						<ul class="list-group">
+							<li class="list-group-item" v-for="list in filbookList">
+								<span>书名：《{{list.name}}》</span>&nbsp;&nbsp;
+								<span>价格：￥{{list.price}}</span>
+							</li>
+						</ul>
+					</div>
+					<div class="col-xs-6">
+						<p>	排序字段
+							<select v-model="orderByArgs">
+								<option value="">排序字段</option>
+								<option value="name">按书名</option>
+								<option value="price">按价格</option>
+							</select>
+							排序方式
+							<select v-model="orderByType">
+								<option value="">排序方式</option>
+								<option value="asc">升序</option>
+								<option value="desc">降序</option>
+							</select>
+						</p>
+						<ul class="list-group">
+							<li class="list-group-item" v-for="list in orderByBooklist">
+								<span>书名：《{{list.name}}》</span>&nbsp;&nbsp;
+								<span>价格：￥{{list.price}}</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-8 col-sm-offset-2">
+						<p>你可能想：我要先排序在搜索，或者相反。。。</p>
+						<span @click="shouDoubleFun" class="btn btn-primary">点我满足你</span>
+						<ul class="list-group" v-if="shouDouble">
+							<li class="list-group-item" v-for="list in fileOrder">
+								<span>书名：《{{list.name}}》</span>&nbsp;&nbsp;
+								<span>价格：￥{{list.price}}</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 使用vue自定义指令 -->
+		<div class="panel panel-danger" id="demo_07">
+			<div class="panel-heading">使用vue directive 建立自定义指令</div>
+			<div class="panel-body">
+				<p>
+					创建指令的无个钩子函数：<br>
+					bind：初始化执行函数<br>
+					inserted：指令目标元素被插入DOM后执行<br>
+					update：指令目标元素更新时渲染<br>
+					componentUpdated：目标元素重新渲染后<br>
+					unbind：被绑定目标元素销毁的时候触发
+				</p>
+				<p>
+					钩子函数的四个参数：<br>
+					el：当前绑定的DOM元素<br>
+					binding：自定义指令绑定的数据对象<br>
+					vNode:vue编译生成的dom虚拟节点<br>
+					oldVnode:上一个虚拟节点，仅在update和componentUpdated钩子中可用
+				</p>
+				<hr/>
+				<p>这是一个小demo：</p>
+				<div v-sheet="tableData" v-if="showtable"></div>
+				<div class="btn btn-primary" @click="changeTableVis()">{{showtable ? '删除表格' : '创建表格'}}</div>
+				<div class="btn btn-primary" @click="addBooks()">添加一本书</div>
+			</div>
+			<div class="panel-footer">
+				<span class="text-danger">注意：钩子函数参数除el外其他参数都应是只读的，不要去修改他们</span>
+			</div>
+		</div>
+		
+		<!-- 关于vue其他库 -->
+		<div class="panel panel-primary" id="demo_04">
+			<div class="panel-heading">关于vue API以及一些库</div>
+			<div class="panel-body">
+				<div>
+					<p>在vue中还有一些其他API：比如插件开发、内容分发slot(例子如：demo3)、过渡效果等等</p>
+				</div>
+				<div>
+					<p>使用vue构建一个应用，不免要涉及到各种各样的功能：比如：<span class="text-success">网络请求</span>，<span class="text-success">路由，状态管理</span>等；</p>
+					<p>网络请求是最常见的功能，vue搭配<span class="text-danger">vue-resource.js</span>可以完成更高效的网络请求，涉及到promise模式；</p>
+					<p>路由，在构建单页面应用时就会用到路由，vue的官方路由库：<span class="text-danger">vue-router.js</span></p>
+					<p>图片懒加载，可以使用：<span class="text-danger">vue-lazyload.js</span></p>
+				</div>
+				<p>vue 的一些组件库</p>
+				<div>
+					<ul class="list-group">
+						<li class="list-group-item">Mint UI(移动端ui组件)</li>
+						<li class="list-group-item">项目主页:http://mint-ui.github.io/#!/zh-cn</li>
+						<li class="list-group-item">demo:http://elemefe.github.io/mint-ui/#/</li>
+						<li class="list-group-item">github地址:https://github.com/ElemeFE/mint-ui</li>
+						<li class="list-group-item">中文文档地址:http://mint-ui.github.io/docs/#!/zh-cn</li>
+					</ul>
+				</div>
+				<div>
+					<ul class="list-group">
+						<li class="list-group-item">radon-ui(select带搜索效果)</li>
+						<li class="list-group-item">中文文档：https://luojilab.github.io/radon-ui/#!/</li>
+						<li class="list-group-item">github:https://github.com/luojilab/radon-ui</li>
+					</ul>
+				</div>
+				<div>
+					<ul class="list-group">
+						<li class="list-group-item">iview(带文件上传组件,组件较齐全)</li>
+						<li class="list-group-item">iView 配套的工作流:https://github.com/icarusion/vue-vueRouter-webpack</li>
+						<li class="list-group-item">github地址:https://github.com/iview/iview</li>
+						<li class="list-group-item">官网:https://www.iviewui.com/</li>
+					</ul>
+				</div>
+				<div>
+					<ul class="list-group">
+						<li class="list-group-item">N3(带文件上传组件)</li>
+						<li class="list-group-item">官网:https://n3-components.github.io/N3-components/</li>
+						<li class="list-group-item">中文文档:https://n3-components.github.io/N3-components/component.html</li>
+						<li class="list-group-item">英文文档:https://github.com/N3-components/N3-components</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript" src="js/demo.js"></script>
+</body>
+</html>

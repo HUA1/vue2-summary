@@ -1,0 +1,103 @@
+<html>
+<head>
+<meta charset="utf-8" />
+<title>vue2.0</title>
+<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/vue-resource.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="container">
+		<div class="well well-sm">vue2.0探索</div>
+		<div class="panel panel-primary" id="demo_01">
+			<div class="panel-heading">简介与对比</div>
+			<div class="panel-body">
+				<p>MVVM框架</p>
+				<p>*兼容性*</p>
+				<p>vue.js支持IE8以上版本（不包含IE8），以及所有支持ECMAScript 5的浏览器。(avalon.js)</p>
+				<p>
+				与其他重量级框架不同的是，Vue 采用自底向上增量开发的设计。Vue 的核心库只关注视图层，并且非常容易学习，非常容易与其它库或已有项目整合。另一方面，Vue 完全有能力驱动采用单文件组件和 Vue 生态系统支持的库开发的复杂单页应用。
+				</p>
+				<p>
+				React 和 Vue 有许多相似之处，它们都有：<br>
+				1、使用 Virtual DOM<br>
+				2、提供了响应式（Reactive）和组件化（Composable）的视图组件。<br>
+				3、将注意力集中保持在核心库，伴随于此，有配套的路由和负责处理全局状态管理的库。
+				</p>
+				<p>
+				下面的数值是来自于一个 2014 年产的 MacBook Air 并在 Chrome 52 版本下运行所产生的。为了避免偶然性，每个参照项目都分别运行 20 次并取自最好的结果：
+				</p>
+				<div>
+				<table class="table table-bordered">
+				  <thead>
+					<tr>
+					  <th class="bg-success"></th>
+					  <th class="bg-success">Vue</th>
+					  <th class="bg-success">React</th>
+					</tr>
+				  </thead>
+				  <tbody>
+					<tr>
+					  <th class="bg-success">Fastest</th>
+					  <td>23ms</td>
+					  <td>63ms</td>
+					</tr>
+					<tr>
+					  <th class="bg-success">Median</th>
+					  <td>42ms</td>
+					  <td>81ms</td>
+					</tr>
+					<tr>
+					  <th class="bg-success">Average</th>
+					  <td>51ms</td>
+					  <td>94ms</td>
+					</tr>
+					<tr>
+					  <th class="bg-success">95th Perc.</th>
+					  <td>73ms</td>
+					  <td>164ms</td>
+					</tr>
+					<tr>
+					  <th class="bg-success">Slowest</th>
+					  <td>343ms</td>
+					  <td>453ms</td>
+					</tr>
+				  </tbody>
+				</table>
+				</div>
+				<p>
+				Vue 的一些语法和 Angular 的很相似（例如 v-if vs ng-if）。因为 Angular 是 Vue 早期开发的灵感来源。<br>
+				然而，Angular 中存在的许多问题，在 Vue 中已经得到解决。<br>
+				ng1采用的更新机制是<span class="text-danger">脏检查机制</span>$watcher,当 watcher 越来越多时会变得越来越慢，因为作用域内的每一次变化，所有 watcher都要重新计算。Vue则根本没有这个问题，因为它使用<span class="text-danger">基于依赖追踪的观察系统并且异步队列更新</span>，所有的数据变化都是独立触发，除非它们之间有明确的依赖关系。
+				在 API 与设计两方面上 Vue.js 都比 Angular 1 简单得多<br>
+				</p>
+				<p>
+				Angular 2 的学习曲线是非常陡峭的。即使不包括 TypeScript，它的开始指南中所用的就有 ES2015 标准的 JavaScript，<span class="text-danger">18个 NPM 依赖包</span>，<span class="text-danger">4 个文件</span>和超过 <span class="text-danger">3 千多字</span>的介绍，这一切都是为了完成个<span class="text-danger"> Hello World</span>。而Vue’s Hello World就非常简单。甚至我们并不用花费一整个页面去介绍它。
+				</p>
+			</div>
+			<div class="panel-footer text-right">
+				<a href="demos.html">没有什么能比Demo更直观&gt;&gt;</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+var demo_01 = new Vue({
+	el:'#demo_01',
+	data:{
+		text:'这句话来自数据data.text',
+		className:'bg-danger',
+		styleSheet:'color:#00f',
+		dataBinding:''
+	},
+	methods:{
+		changeBg:function(){
+			this.className = this.className != 'bg-danger' ? 'bg-danger' : 'bg-primary';
+		}
+	}
+});
+</script>
+</body>
+</html>
