@@ -47,6 +47,14 @@
     text-align: right;
 }
 
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
+}
+/*
 .fade-leave-active{
 	opacity:0
 }
@@ -59,3 +67,4 @@
 .fade-leave,.fade-leave-active{
 	transition: opacity 2s ease-in;
 }
+*/
